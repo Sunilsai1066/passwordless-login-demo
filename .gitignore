@@ -1,0 +1,19 @@
+# Python virtual environment
+backend/.venv/
+.venv/
+
+# Python cache
+backend/__pycache__/
+backend/**/*.pyc
+
+# Node modules
+frontend/node_modules/
+
+# Vite build output
+frontend/dist/
+
+# Environment files
+.env
+
+# macOS/Linux junk
+.DS_Store
