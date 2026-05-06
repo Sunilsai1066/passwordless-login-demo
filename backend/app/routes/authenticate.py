@@ -1,37 +1,11 @@
 from fastapi import APIRouter
-
-from fido2.utils import (
-    websafe_encode
-)
-
+from app.utils.encoding import convert_bytes
+from fido2.utils import websafe_encode
 from app.fido_server import server
+from app.storage import users, authentication_challenges
 
-from app.storage import (
-    users,
-    authentication_challenges
-)
 
 router = APIRouter()
-
-
-def convert_bytes(obj):
-
-    if isinstance(obj, bytes):
-        return websafe_encode(obj)
-
-    if isinstance(obj, dict):
-        return {
-            key: convert_bytes(value)
-            for key, value in obj.items()
-        }
-
-    if isinstance(obj, list):
-        return [
-            convert_bytes(item)
-            for item in obj
-        ]
-
-    return obj
 
 
 @router.post("/authenticate/begin")
