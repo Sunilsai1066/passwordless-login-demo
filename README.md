@@ -146,3 +146,58 @@ http://localhost:5173
 2. Click `Authenticate`
 3. Touch YubiKey
 4. Authentication completes
+
+
+# Vercel Setup
+
+## Backend Environment Variables
+
+Add the following variables in the backend Vercel project.
+
+### `RP_ID`
+
+```text
+your-frontend.vercel.app
+```
+
+Example:
+
+```text
+passwordless-demo-frontend.vercel.app
+```
+
+IMPORTANT:
+- Do NOT add `https://`
+- Do NOT add trailing slash
+
+---
+
+### `FRONTEND_ORIGIN`
+
+```text
+https://your-frontend.vercel.app
+```
+
+Example:
+
+```text
+https://passwordless-demo-frontend.vercel.app
+```
+
+---
+
+# Frontend Environment Variables
+
+Add the following variable in the frontend Vercel project.
+
+### `VITE_API_BASE_URL`
+
+```text
+https://your-backend.vercel.app
+```
+
+Example:
+
+```text
+https://passwordless-api.vercel.app
+```
