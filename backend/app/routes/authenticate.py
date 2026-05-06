@@ -4,7 +4,6 @@ from fido2.utils import websafe_encode
 from app.fido_server import server
 from app.storage import users, authentication_challenges
 
-
 router = APIRouter()
 
 
@@ -24,16 +23,9 @@ async def authenticate_begin(payload: dict):
     print(user)
 
     if not user:
-        return {
-            "status": "error",
-            "message": "User not found"
-        }
+        return {"status": "error", "message": "User not found"}
 
-    auth_data, state = server.authenticate_begin(
-        credentials=[
-            user["credential_data"]
-        ]
-    )
+    auth_data, state = server.authenticate_begin(credentials=[user["credential_data"]])
 
     authentication_challenges[username] = state
 
@@ -43,9 +35,7 @@ async def authenticate_begin(payload: dict):
 
     print("\n========================================\n")
 
-    auth_data = convert_bytes(
-        dict(auth_data)
-    )
+    auth_data = convert_bytes(dict(auth_data))
 
     return auth_data
 
@@ -57,6 +47,4 @@ async def authenticate_complete(payload: dict):
 
     print(payload)
 
-    return {
-        "status": "ok"
-    }
+    return {"status": "ok"}

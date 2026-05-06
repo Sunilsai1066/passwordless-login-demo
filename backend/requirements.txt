@@ -3,3 +3,4 @@ uvicorn
 fido2
 python-multipart
 python-dotenv
+black

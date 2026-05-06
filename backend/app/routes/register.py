@@ -1,10 +1,9 @@
 from fastapi import APIRouter
-from fido2.webauthn import PublicKeyCredentialUserEntity,RegistrationResponse
+from fido2.webauthn import PublicKeyCredentialUserEntity, RegistrationResponse
 from fido2.utils import websafe_encode, websafe_decode
 from app.utils.encoding import convert_bytes
 from app.fido_server import server
 from app.storage import users, registration_challenges
-
 
 router = APIRouter()
 
@@ -19,15 +18,10 @@ async def register_begin(payload: dict):
     print(f"Username: {username}")
 
     user = PublicKeyCredentialUserEntity(
-        id=username.encode(),
-        name=username,
-        display_name=username
+        id=username.encode(), name=username, display_name=username
     )
 
-    registration_data, state = server.register_begin(
-        user=user,
-        credentials=[]
-    )
+    registration_data, state = server.register_begin(user=user, credentials=[])
 
     registration_challenges[username] = state
 
@@ -38,9 +32,7 @@ async def register_begin(payload: dict):
 
     print("\n===================================\n")
 
-    registration_data = convert_bytes(
-        dict(registration_data)
-    )
+    registration_data = convert_bytes(dict(registration_data))
 
     return registration_data
 
@@ -62,34 +54,25 @@ async def register_complete(payload: dict):
 
     state = registration_challenges[username]
 
-    registration_response = RegistrationResponse.from_dict({
-        "id": credential["id"],
-        "rawId": credential["rawId"],
-        "type": credential["type"],
-        "response": {
-            "clientDataJSON":
-                websafe_decode(
+    registration_response = RegistrationResponse.from_dict(
+        {
+            "id": credential["id"],
+            "rawId": credential["rawId"],
+            "type": credential["type"],
+            "response": {
+                "clientDataJSON": websafe_decode(
                     credential["response"]["clientDataJSON"]
                 ),
-
-            "attestationObject":
-                websafe_decode(
+                "attestationObject": websafe_decode(
                     credential["response"]["attestationObject"]
-                )
+                ),
+            },
         }
-    })
-
-    auth_data = server.register_complete(
-        state,
-        registration_response
     )
 
-    users[username] = {
-        "credential_data":
-            auth_data.credential_data,
+    auth_data = server.register_complete(state, registration_response)
 
-        "sign_count": 0
-    }
+    users[username] = {"credential_data": auth_data.credential_data, "sign_count": 0}
 
     print("\nUSER REGISTERED SUCCESSFULLY")
 
@@ -99,7 +82,4 @@ async def register_complete(payload: dict):
 
     print("\n======================================\n")
 
-    return {
-        "status": "ok",
-        "message": "Registration complete"
-    }
+    return {"status": "ok", "message": "Registration complete"}
